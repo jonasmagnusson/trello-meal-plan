@@ -1,32 +1,34 @@
 Function New-TrelloRecipe {
     <#
-	.SYNOPSIS
+    .SYNOPSIS
         New-TrelloRecipe
     .DESCRIPTION
         New-TrelloRecipe
-	.PARAMETER BoardName
-	 	The board name to create the recipe template in.
-	.PARAMETER ListName
+    .PARAMETER BoardName
+        The board name to create the recipe template in.
+    .PARAMETER ListName
         The list name to create the recipe template in.
-	.EXAMPLE
-		PS> New-TrelloRecipe -BoardName "Recipes" -ListName "Meat"
-	
-		Create recipe template in board Recipe and list Meat.
-	#>
+    .EXAMPLE
+        PS> New-TrelloRecipe -BoardName "Recipes" -ListName "Meat"
 
-	[CmdletBinding()]
-	Param (
-       [Parameter(Mandatory=$True, Position=1)]
-       [String]$BoardName,
+        Create recipe template in board Recipe and list Meat.
+    #>
 
-       [Parameter(Mandatory=$True, Position=2)]
-       [String]$ListName
-	)
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $True, Position = 1)]
+        [String]$BoardName,
 
-	Process {
+        [Parameter(Mandatory = $True, Position = 2)]
+        [String]$ListName
+    )
+
+    Process {
         # Get board and list objects
         $board = Get-TrelloBoard -Name $BoardName
         $list = Get-TrelloList -BoardId $($board.Id) | Where-Object { $_.Name -like $ListName }
+
+        Write-Host "Creating template card for recipe... " -NoNewline
 
         # Create description
         $desciption += "* Servings: 6`n"
@@ -43,5 +45,7 @@ Function New-TrelloRecipe {
 
         # Add checklist to card
         $card | New-TrelloCardChecklist -Name "Ingredients"
-	}
+
+        Write-Host "√" -ForegroundColor 'Green'
+    }
 }
